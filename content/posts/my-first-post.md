@@ -1,6 +1,7 @@
 ---
-title: "Content Placeholder"
-
+title: "Hello, world"
+date: 2025-10-07
+tags: ["intro"]
 ---
 
-test
+This is a test post. Delete me.

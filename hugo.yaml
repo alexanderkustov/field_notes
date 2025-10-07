@@ -1,4 +1,46 @@
-baseURL: https://example.org/
-languageCode: en-us
-title: My New Hugo Site
-theme: ["PaperMod"]
+baseURL: "https://USERNAME.github.io/REPO/"
+languageCode: "en-gb"
+title: "Site Title"
+theme: "PaperMod"
+pagination:
+  pagerSize: 10
+timeZone: "Europe/London"
+
+outputs:
+  home: ["HTML", "RSS", "JSON"]
+
+permalinks:
+  posts: "/posts/:year/:month/:slug/"
+  weeknotes: "/weeknotes/:year/:slug/"
+
+taxonomies:
+  tag: "tags"
+  category: "categories"
+  series: "series"
+
+params:
+  env: "production"
+  description: "My site"
+  defaultTheme: "auto"
+  ShowReadingTime: true
+  ShowShareButtons: false
+  ShowPostNavLinks: true
+  ShowBreadCrumbs: true
+  ShowCodeCopyButtons: true
+  disableSpecial1stPost: true
+  comments: false
+  homeInfoParams:
+    Title: "Hello."
+    Content: "This site uses PaperMod. Replace this text in config.yaml."
+
+menu:
+  main:
+    - name: "Weeknotes"
+      url: "/weeknotes/"
+      weight: 10
+    - name: "Posts"
+      url: "/posts/"
+      weight: 20
+    - name: "RSS"
+      url: "/index.xml"
+      weight: 30
