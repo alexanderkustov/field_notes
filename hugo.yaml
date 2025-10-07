@@ -1,6 +1,6 @@
-baseURL: "https://USERNAME.github.io/REPO/"
+baseURL: "https://alexanderkustov.github.io/field_notes/"
 languageCode: "en-gb"
-title: "Site Title"
+title: "Field Notes"
 theme: "PaperMod"
 pagination:
   pagerSize: 10
@@ -20,7 +20,7 @@ taxonomies:
 
 params:
   env: "production"
-  description: "My site"
+  description: "Field Notes"
   defaultTheme: "auto"
   ShowReadingTime: true
   ShowShareButtons: false
@@ -31,7 +31,7 @@ params:
   comments: false
   homeInfoParams:
     Title: "Hello."
-    Content: "This site uses PaperMod. Replace this text in config.yaml."
+    Content: "This site uses PaperMod. still finding my footing around here"
 
 menu:
   main:
