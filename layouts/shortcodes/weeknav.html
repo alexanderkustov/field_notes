@@ -1,0 +1,28 @@
+{{- $current := .Page -}}
+{{- $weeknotes := sort (where $.Site.RegularPages "Section" "weeknotes") "Date" "asc" -}}
+{{- $prevPages := where $weeknotes "Date" "lt" $current.Date -}}
+{{- $nextPages := where $weeknotes "Date" "gt" $current.Date -}}
+{{- if or (gt (len $prevPages) 0) (gt (len $nextPages) 0) -}}
+<nav class="weeknav" aria-label="Weeknote navigation">
+  <div class="weeknav__slot weeknav__slot--prev">
+    {{- if gt (len $prevPages) 0 -}}
+      {{- with index (last 1 $prevPages) 0 -}}
+    <a class="weeknav__link weeknav__link--prev" href="{{ .RelPermalink }}">
+      <span class="weeknav__label">Previous</span>
+      <span class="weeknav__title">{{ .Title }}</span>
+    </a>
+      {{- end -}}
+    {{- end -}}
+  </div>
+  <div class="weeknav__slot weeknav__slot--next">
+    {{- if gt (len $nextPages) 0 -}}
+      {{- with index (first 1 $nextPages) 0 -}}
+    <a class="weeknav__link weeknav__link--next" href="{{ .RelPermalink }}">
+      <span class="weeknav__label">Next</span>
+      <span class="weeknav__title">{{ .Title }}</span>
+    </a>
+      {{- end -}}
+    {{- end -}}
+  </div>
+</nav>
+{{- end -}}
