@@ -1,10 +1,20 @@
-baseURL: "https://alexanderkustov.github.io/field_notes/"
+baseURL: "http://localhost:1313/"
 languageCode: "en-gb"
+defaultContentLanguage: "en-gb"
 title: "Field Notes"
-theme: "PaperMod"
+timeZone: "Europe/London"
+
+languages:
+  en-gb:
+    languageName: "English (UK)"
+    weight: 1
+
+module:
+  imports:
+    - path: github.com/adityatelange/hugo-PaperMod
+
 pagination:
   pagerSize: 10
-timeZone: "Europe/London"
 
 outputs:
   home: ["HTML", "RSS", "JSON"]
@@ -19,7 +29,7 @@ taxonomies:
   series: "series"
 
 params:
-  env: "production"
+  env: "development"
   description: "Field Notes"
   defaultTheme: "auto"
   ShowReadingTime: true
