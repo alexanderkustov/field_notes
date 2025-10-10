@@ -1,0 +1,55 @@
+{{ define "main" }}
+<main class="main">
+  <header class="page-header">
+    <div class="breadcrumbs"><a href="{{ relLangURL "/" }}">Home</a></div>
+    <h1>{{ .Title }}</h1>
+    {{ with .Content }}<div class="page-description">{{ . }}</div>{{ end }}
+  </header>
+  {{- $pages := sort .Pages "Date" "desc" -}}
+  {{- if eq (len $pages) 0 -}}
+  <p>No weeknotes published yet.</p>
+  {{- else -}}
+  {{- $currentYear := "" -}}
+  {{- range $index, $page := $pages -}}
+    {{- $year := $page.Date | dateFormat "2006" -}}
+    {{- $weekTitle := $page.Title | replaceRE " —.*$" "" -}}
+    {{- if ne $year $currentYear -}}
+      {{- if ne $currentYear "" -}}
+        </div>
+      </section>
+      {{- end -}}
+      <section class="weeknotes-year">
+        <h2 class="weeknotes-year__title">{{ $year }}</h2>
+        <div class="weeknotes-year__list">
+      {{- $currentYear = $year -}}
+    {{- end -}}
+    <article class="post-entry weeknotes-entry">
+      <header class="entry-header">
+        <h2 class="entry-hint-parent">
+          <a href="{{ $page.RelPermalink }}">{{ $weekTitle }}</a>
+        </h2>
+        <p class="weeknotes-entry__meta">{{ $page.Date | dateFormat "January 2, 2006" }}</p>
+      </header>
+      <div class="entry-content">
+        {{- with $page.Params.summary -}}
+          <p>{{ . }}</p>
+        {{- else -}}
+          {{- with $page.Summary -}}
+            <p>{{ . | plainify }}</p>
+          {{- else -}}
+            {{- with $page.Plain -}}
+              <p>{{ . | truncate 140 }}</p>
+            {{- end -}}
+          {{- end -}}
+        {{- end -}}
+      </div>
+      <a class="entry-link" aria-label="Weeknote link to {{ $page.Title }}" href="{{ $page.RelPermalink }}"></a>
+    </article>
+    {{- if eq (add $index 1) (len $pages) -}}
+        </div>
+      </section>
+    {{- end -}}
+  {{- end -}}
+  {{- end -}}
+</main>
+{{ end }}
