@@ -1,0 +1,49 @@
+{{ define "main" }}
+<main class="page-list">
+  <header class="page-header">
+    <h1>{{ .Title }}</h1>
+    {{ with .Params.description }}
+      <p class="page-description">{{ . }}</p>
+    {{ else if .Description }}
+      <p class="page-description">{{ . }}</p>
+    {{ end }}
+    {{ with .Content }}
+      <div class="page-intro">{{ . }}</div>
+    {{ end }}
+  </header>
+
+  {{ $pages := .Pages }}
+  {{ if .IsSection }}
+    {{ $pages = .RegularPagesRecursive }}
+  {{ end }}
+  {{ $paginator := .Paginate $pages }}
+  <div class="list-grid">
+    {{ range $paginator.Pages }}
+      <article class="list-item">
+        <h2><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h2>
+        {{ with .Params.summary }}
+          <p class="list-summary">{{ . }}</p>
+        {{ else }}
+          {{ with .Summary }}
+            <p class="list-summary">{{ . | plainify }}</p>
+          {{ end }}
+        {{ end }}
+        {{ with .Params.tags }}
+          <ul class="tag-list">
+            {{ range . }}
+              {{ $tag := . }}
+              {{ with site.GetPage (printf "tags/%s" (urlize $tag)) }}
+                <li><a href="{{ .RelPermalink }}">#{{ $tag }}</a></li>
+              {{ else }}
+                <li>#{{ $tag }}</li>
+              {{ end }}
+            {{ end }}
+          </ul>
+        {{ end }}
+      </article>
+    {{ end }}
+  </div>
+
+  {{ template "_internal/pagination.html" . }}
+</main>
+{{ end }}
