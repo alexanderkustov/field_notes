@@ -31,7 +31,7 @@ photos:
     alt: "Exterior of {{ replace .Name "-" " " | title }}"
     caption: ""
 visit:
-  date: ""
+  date: null
   companions: []
 ---
 
