@@ -21,10 +21,10 @@ location:
     east: null
     west: null
 rating:
-  overall: 0
-  food: 0
-  service: 0
-  ambiance: 0
+  overall: null
+  food: null
+  service: null
+  ambiance: null
 price_range: "$$"
 photos:
   - src: "/images/restaurants/{{ .Name }}/exterior.jpg"
