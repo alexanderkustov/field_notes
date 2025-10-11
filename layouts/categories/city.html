@@ -1,12 +1,14 @@
 {{ $pages := .Pages }}
 {{ $features := slice }}
-{{ $mapBounds := nil }}
+{{ $mapBounds := .Params.map_bounds }}
 {{ range $pages }}
   {{ $page := . }}
   {{ with .Params.location }}
-    {{ with .map_bounds }}
-      {{ if not $mapBounds }}
-        {{ $mapBounds = . }}
+    {{ if not $mapBounds }}
+      {{ with .map_bounds }}
+        {{ if or (and .north .south .east .west) (and (ne .north nil) (ne .south nil) (ne .east nil) (ne .west nil)) }}
+          {{ $mapBounds = . }}
+        {{ end }}
       {{ end }}
     {{ end }}
     {{ with .coordinates }}
@@ -19,7 +21,7 @@
             {{ $summary = . | plainify }}
           {{ end }}
         {{ end }}
-        {{ $feature := dict "title" $page.Title "permalink" $page.RelPermalink "latitude" .latitude "longitude" .longitude "summary" $summary }}
+        {{ $feature := dict "title" $page.Title "permalink" $page.RelPermalink "latitude" .latitude "longitude" .longitude "summary" $summary "city" .city "neighborhood" .neighborhood }}
         {{ $features = $features | append $feature }}
       {{ end }}
     {{ end }}
@@ -38,7 +40,7 @@
     {{ end }}
   </header>
 
-  <div class="city-category__map" id="city-map"></div>
+  <div class="city-category__map" id="city-map" role="region" aria-label="City restaurant map"></div>
 
   <section class="city-category__list">
     <h2>Restaurants</h2>
@@ -54,8 +56,14 @@
                 <p>{{ . | plainify }}</p>
               {{ end }}
             {{ end }}
-            {{ with .Params.location.neighborhood }}
-              <p class="city-category__neighborhood">{{ . }}</p>
+            {{ with .Params.location }}
+              {{ if or .neighborhood .city }}
+                <p class="city-category__location">
+                  {{ with .neighborhood }}<span class="city-category__neighborhood">{{ . }}</span>{{ end }}
+                  {{ if and .neighborhood .city }}<span aria-hidden="true"> · </span>{{ end }}
+                  {{ with .city }}<span class="city-category__city">{{ . }}</span>{{ end }}
+                </p>
+              {{ end }}
             {{ end }}
           </article>
         </li>

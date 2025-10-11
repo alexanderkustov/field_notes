@@ -16,6 +16,12 @@
       console.error("Failed to parse city map data", error);
     }
 
+    if (!features.length) {
+      mapContainer.classList.add("city-category__map--empty");
+      mapContainer.innerHTML = '<p class="city-category__map-empty">No map data yet. Add coordinates to restaurant entries to populate this view.</p>';
+      return;
+    }
+
     const map = L.map(mapContainer, {
       scrollWheelZoom: false,
       closePopupOnClick: false,

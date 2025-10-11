@@ -11,6 +11,24 @@
     height: 28rem;
     border-radius: 0.75rem;
     overflow: hidden;
+    background: var(--code-bg);
+    border: 1px solid transparent;
+  }
+
+  .city-category__map--empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-style: dashed;
+    border-color: var(--border);
+  }
+
+  .city-category__map-empty {
+    margin: 0;
+    padding: 1.5rem;
+    max-width: 28rem;
+    text-align: center;
+    color: var(--secondary);
   }
 
   .city-category__list ul {
@@ -37,8 +55,17 @@
     margin: 0.25rem 0 0;
   }
 
-  .city-category__neighborhood {
+  .city-category__location {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
     font-size: 0.9rem;
+    color: var(--secondary);
+  }
+
+  .city-category__location span[aria-hidden="true"] {
     color: var(--secondary);
   }
 
