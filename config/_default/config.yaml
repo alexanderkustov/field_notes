@@ -39,6 +39,9 @@ params:
   ShowCodeCopyButtons: true
   disableSpecial1stPost: true
   comments: false
+  socialIcons:
+    - name: github
+      url: https://github.com/you
   homeInfoParams:
     Title: "Hello."
     Content: "This site uses PaperMod. still finding my footing around here"
