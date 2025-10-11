@@ -1,0 +1,69 @@
+{{ if and (eq .Kind "taxonomy") (eq .Data.Singular "category") (eq .Data.Term "city") }}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script>
+  (function () {
+    const mapContainer = document.getElementById("city-map");
+    const featureDataEl = document.getElementById("city-map-features");
+
+    if (!mapContainer || !featureDataEl) {
+      return;
+    }
+
+    let features = [];
+    try {
+      features = JSON.parse(featureDataEl.textContent) || [];
+    } catch (error) {
+      console.error("Failed to parse city map data", error);
+    }
+
+    if (!features.length) {
+      mapContainer.classList.add("city-category__map--empty");
+      mapContainer.innerHTML = '<p class="city-category__map-empty">No map data yet. Add coordinates to restaurant entries to populate this view.</p>';
+      return;
+    }
+
+    const map = L.map(mapContainer, {
+      scrollWheelZoom: false,
+      closePopupOnClick: false,
+    });
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 18,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    const boundsEl = document.getElementById("city-map-bounds");
+    let explicitBounds = null;
+    if (boundsEl) {
+      try {
+        explicitBounds = JSON.parse(boundsEl.textContent);
+      } catch (error) {
+        console.warn("Failed to parse map bounds", error);
+      }
+    }
+
+    const markers = [];
+    features.forEach((feature) => {
+      if (feature.latitude && feature.longitude) {
+        const marker = L.marker([feature.latitude, feature.longitude]).addTo(map);
+        marker.bindPopup(
+          `<strong><a href="${feature.permalink}">${feature.title}</a></strong><br/>${feature.summary || ""}`
+        );
+        markers.push(marker);
+      }
+    });
+
+    if (explicitBounds && explicitBounds.north !== undefined) {
+      map.fitBounds([
+        [explicitBounds.south, explicitBounds.west],
+        [explicitBounds.north, explicitBounds.east],
+      ], { padding: [24, 24] });
+    } else if (markers.length) {
+      const markerBounds = L.latLngBounds(markers.map((marker) => marker.getLatLng()));
+      map.fitBounds(markerBounds, { padding: [24, 24] });
+    } else {
+      map.setView([0, 0], 2);
+    }
+  })();
+</script>
+{{ end }}
