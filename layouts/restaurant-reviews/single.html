@@ -1,0 +1,104 @@
+{{ define "main" }}
+<main class="restaurant-review">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-o9N1j7kPykbETT4gJEkR8V7KkZw0vvIOQ64rjM3Hk7w=" crossorigin="" />
+  <link rel="stylesheet" href="{{ "css/restaurant-map.css" | relURL }}" />
+  <article class="post-single">
+    <header class="post-header">
+      <div class="breadcrumbs">
+        <a href="{{ relLangURL "/" }}">Home</a>
+        <span aria-hidden="true">›</span>
+        <a href="{{ relLangURL "/restaurant-reviews/" }}">Restaurant Reviews</a>
+      </div>
+      <h1 class="post-title">{{ .Title }}</h1>
+      <div class="post-meta">
+        <span class="post-date">{{ .Date | dateFormat "2 January 2006" }}</span>
+      </div>
+      {{ with .Params.summary }}
+        <p class="post-description">{{ . }}</p>
+      {{ end }}
+    </header>
+
+    {{- $addressParts := slice -}}
+    {{- with .Params.address -}}
+      {{- with .street }}{{ $addressParts = $addressParts | append . }}{{ end -}}
+      {{- with .city }}{{ $addressParts = $addressParts | append . }}{{ end -}}
+      {{- with .region }}{{ $addressParts = $addressParts | append . }}{{ end -}}
+      {{- with .postal_code }}{{ $addressParts = $addressParts | append . }}{{ end -}}
+      {{- with .country }}{{ $addressParts = $addressParts | append . }}{{ end -}}
+    {{- end -}}
+    {{- $address := delimit $addressParts ", " -}}
+
+    {{- $hasMeta := or (or (or .Params.cuisine .Params.price_tier) .Params.rating) (or .Params.website $address) -}}
+    {{ if $hasMeta }}
+      <section class="restaurant-review__details">
+        <h2>Details</h2>
+        <dl class="restaurant-review__meta">
+          {{ with .Params.cuisine }}
+            <div class="restaurant-review__meta-item">
+              <dt>Cuisine</dt>
+              <dd>{{ . }}</dd>
+            </div>
+          {{ end }}
+          {{ with .Params.price_tier }}
+            <div class="restaurant-review__meta-item">
+              <dt>Price</dt>
+              <dd>{{ . }}</dd>
+            </div>
+          {{ end }}
+          {{ with .Params.rating }}
+            <div class="restaurant-review__meta-item">
+              <dt>Rating</dt>
+              <dd>{{ . }}</dd>
+            </div>
+          {{ end }}
+          {{ with .Params.website }}
+            <div class="restaurant-review__meta-item">
+              <dt>Website</dt>
+              <dd><a href="{{ . }}" rel="noopener" target="_blank">{{ . }}</a></dd>
+            </div>
+          {{ end }}
+          {{ if $address }}
+            <div class="restaurant-review__meta-item">
+              <dt>Address</dt>
+              <dd>{{ $address }}</dd>
+            </div>
+          {{ end }}
+        </dl>
+      </section>
+    {{ end }}
+
+    {{- $coords := .Params.coordinates -}}
+    {{- $hasCoords := and $coords (isset $coords "latitude") (isset $coords "longitude") (not (eq $coords.latitude nil)) (not (eq $coords.longitude nil)) (ne (printf "%v" $coords.latitude) "") (ne (printf "%v" $coords.longitude) "") -}}
+    {{ if $hasCoords }}
+      <section class="restaurant-review__map">
+        <h2>Location</h2>
+        <div id="restaurant-review-map" class="restaurant-review-map" role="region" aria-label="Map showing {{ .Title }}"></div>
+      </section>
+    {{ end }}
+
+    <div class="post-content">
+      {{ .Content }}
+    </div>
+  </article>
+
+  {{ if $hasCoords }}
+    <script>
+      window.restaurantReviewLocations = [
+        {
+          title: {{ .Title | jsonify }},
+          url: {{ .RelPermalink | jsonify }},
+          latitude: {{ float $coords.latitude }},
+          longitude: {{ float $coords.longitude }},
+          address: {{ $address | jsonify }}
+        }
+      ];
+      window.restaurantReviewMapConfig = {
+        containerId: "restaurant-review-map",
+        zoom: 15
+      };
+    </script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-o9N1j7kPykbETT4gJEkR8V7KkZw0vvIOQ64rjM3Hk7w=" crossorigin=""></script>
+    <script src="{{ "js/restaurant-map.js" | relURL }}"></script>
+  {{ end }}
+</main>
+{{ end }}

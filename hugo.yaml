@@ -41,6 +41,9 @@ menu:
     - name: "Posts"
       url: "/posts/"
       weight: 20
+    - name: "Restaurants"
+      url: "/restaurant-reviews/"
+      weight: 25
     - name: "RSS"
       url: "/index.xml"
       weight: 30

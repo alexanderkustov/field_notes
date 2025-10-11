@@ -1,0 +1,98 @@
+{{ define "main" }}
+<main class="restaurant-reviews">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-o9N1j7kPykbETT4gJEkR8V7KkZw0vvIOQ64rjM3Hk7w=" crossorigin="" />
+  <link rel="stylesheet" href="{{ "css/restaurant-map.css" | relURL }}" />
+  <header class="page-header">
+    <div class="breadcrumbs"><a href="{{ relLangURL "/" }}">Home</a></div>
+    <h1>{{ .Title }}</h1>
+    {{ with .Content }}
+      <div class="page-description">{{ . }}</div>
+    {{ end }}
+  </header>
+
+  {{- $pages := sort (.RegularPagesRecursive) "Date" "desc" -}}
+  {{- $locations := slice -}}
+  {{- range $pages -}}
+    {{- $page := . -}}
+    {{- with $page.Params.coordinates -}}
+      {{- if and (isset . "latitude") (isset . "longitude") (not (eq .latitude nil)) (not (eq .longitude nil)) (ne (printf "%v" .latitude) "") (ne (printf "%v" .longitude) "") -}}
+        {{- $addressParts := slice -}}
+        {{- with $page.Params.address -}}
+          {{- with .street }}{{ $addressParts = $addressParts | append . }}{{ end -}}
+          {{- with .city }}{{ $addressParts = $addressParts | append . }}{{ end -}}
+          {{- with .region }}{{ $addressParts = $addressParts | append . }}{{ end -}}
+          {{- with .postal_code }}{{ $addressParts = $addressParts | append . }}{{ end -}}
+          {{- with .country }}{{ $addressParts = $addressParts | append . }}{{ end -}}
+        {{- end -}}
+        {{- $address := delimit $addressParts ", " -}}
+        {{- $locations = $locations | append (dict "title" $page.Title "url" $page.RelPermalink "latitude" (float .latitude) "longitude" (float .longitude) "summary" $page.Params.summary "address" $address) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $hasLocations := gt (len $locations) 0 -}}
+
+  <section class="restaurant-reviews__map">
+    <h2>Explore the map</h2>
+    {{ if $hasLocations }}
+      <div id="restaurant-review-map" class="restaurant-review-map" role="region" aria-label="Map of restaurant locations"></div>
+    {{ else }}
+      <p class="restaurant-review-map__empty">Add the first restaurant with location data to see it appear on the map.</p>
+    {{ end }}
+  </section>
+
+  <section class="restaurant-reviews__list">
+    {{ if eq (len $pages) 0 }}
+      <p>No restaurant reviews published yet.</p>
+    {{ else }}
+      {{ range $pages }}
+        <article class="restaurant-review-card">
+          <h2 class="restaurant-review-card__title"><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h2>
+          {{ with .Params.summary }}
+            <p class="restaurant-review-card__summary">{{ . }}</p>
+          {{ else }}
+            {{ with .Summary }}
+              <p class="restaurant-review-card__summary">{{ . | plainify }}</p>
+            {{ end }}
+          {{ end }}
+
+          <ul class="restaurant-review-card__meta">
+            {{ with .Params.cuisine }}
+              <li><strong>Cuisine:</strong> {{ . }}</li>
+            {{ end }}
+            {{ with .Params.price_tier }}
+              <li><strong>Price:</strong> {{ . }}</li>
+            {{ end }}
+            {{ with .Params.rating }}
+              <li><strong>Rating:</strong> {{ . }}</li>
+            {{ end }}
+            {{- $addressParts := slice -}}
+            {{- with .Params.address -}}
+              {{- with .street }}{{ $addressParts = $addressParts | append . }}{{ end -}}
+              {{- with .city }}{{ $addressParts = $addressParts | append . }}{{ end -}}
+              {{- with .region }}{{ $addressParts = $addressParts | append . }}{{ end -}}
+              {{- with .postal_code }}{{ $addressParts = $addressParts | append . }}{{ end -}}
+              {{- with .country }}{{ $addressParts = $addressParts | append . }}{{ end -}}
+            {{- end -}}
+            {{- $address := delimit $addressParts ", " -}}
+            {{ if $address }}
+              <li><strong>Address:</strong> {{ $address }}</li>
+            {{ end }}
+          </ul>
+        </article>
+      {{ end }}
+    {{ end }}
+  </section>
+
+  {{ if $hasLocations }}
+    <script>
+      window.restaurantReviewLocations = {{ $locations | jsonify }};
+      window.restaurantReviewMapConfig = {
+        containerId: "restaurant-review-map",
+        zoom: 13
+      };
+    </script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-o9N1j7kPykbETT4gJEkR8V7KkZw0vvIOQ64rjM3Hk7w=" crossorigin=""></script>
+    <script src="{{ "js/restaurant-map.js" | relURL }}"></script>
+  {{ end }}
+</main>
+{{ end }}
