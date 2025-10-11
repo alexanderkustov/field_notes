@@ -12,10 +12,7 @@
         {{- $links = $links | append (dict "name" $name "url" $url "rel" $rel) -}}
       {{- end -}}
     {{- end -}}
-  {{- end -}}
-{{- end -}}
-{{- if not (gt (len $links) 0) -}}
-  {{- with site.Social -}}
+  {{- else if (or (kindIs "map" .) (kindIs "dict" .)) -}}
     {{- range $network, $url := . -}}
       {{- if $url -}}
         {{- $links = $links | append (dict "name" $network "url" $url "rel" "me") -}}
