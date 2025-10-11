@@ -1,0 +1,38 @@
+{{- $links := slice -}}
+{{- with site.Params.social -}}
+  {{- if (or (kindIs "slice" .) (kindIs "array" .)) -}}
+    {{- range . -}}
+      {{- $name := cond (isset . "name") (index . "name") "" -}}
+      {{- $url := cond (isset . "url") (index . "url") "" -}}
+      {{- if and $name $url -}}
+        {{- $rel := "me" -}}
+        {{- if (isset . "rel") -}}
+          {{- $rel = index . "rel" -}}
+        {{- end -}}
+        {{- $links = $links | append (dict "name" $name "url" $url "rel" $rel) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if not (gt (len $links) 0) -}}
+  {{- with site.Social -}}
+    {{- range $network, $url := . -}}
+      {{- if $url -}}
+        {{- $links = $links | append (dict "name" $network "url" $url "rel" "me") -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if gt (len $links) 0 -}}
+<nav class="site-social" aria-label="Social links">
+  <ul class="site-social__list">
+    {{- range sort $links "name" -}}
+      <li class="site-social__item">
+        <a class="site-social__link" href="{{ .url }}" rel="{{ .rel }}"{{ if strings.HasPrefix .url "http" }} target="_blank"{{ end }}>
+          <span class="site-social__name">{{ .name }}</span>
+        </a>
+      </li>
+    {{- end -}}
+  </ul>
+</nav>
+{{- end -}}
