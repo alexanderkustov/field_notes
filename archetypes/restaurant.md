@@ -13,13 +13,13 @@ location:
   neighborhood: ""
   address: ""
   coordinates:
-    latitude: 
-    longitude: 
+    latitude: null
+    longitude: null
   map_bounds:
-    north: 
-    south: 
-    east: 
-    west: 
+    north: null
+    south: null
+    east: null
+    west: null
 rating:
   overall: 0
   food: 0
