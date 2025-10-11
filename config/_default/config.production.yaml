@@ -1,0 +1,4 @@
+baseURL: "https://alexanderkustov.github.io/field_notes/"
+
+params:
+  env: "production"
