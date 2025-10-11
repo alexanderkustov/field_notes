@@ -83,7 +83,6 @@ jobs:
             --gc \
             --minify \
             --environment production \
-            --config config/_default/config.yaml,config/_default/config.production.yaml \
             --cacheDir "${{ runner.temp }}/hugo_cache"
       - name: Cache save
         id: cache-save
