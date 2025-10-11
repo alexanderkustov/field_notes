@@ -1,0 +1,56 @@
+{{ if and (eq .Kind "taxonomy") (eq .Data.Singular "category") (eq .Data.Term "city") }}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+<style>
+  .city-category {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .city-category__map {
+    width: 100%;
+    height: 28rem;
+    border-radius: 0.75rem;
+    overflow: hidden;
+  }
+
+  .city-category__list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .city-category__list li {
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    background: var(--entry);
+    box-shadow: var(--shadow);
+  }
+
+  .city-category__list h3 {
+    margin: 0 0 0.5rem 0;
+  }
+
+  .city-category__list p {
+    margin: 0.25rem 0 0;
+  }
+
+  .city-category__neighborhood {
+    font-size: 0.9rem;
+    color: var(--secondary);
+  }
+
+  @media (min-width: 64rem) {
+    .city-category {
+      grid-template-columns: 2fr 1fr;
+      align-items: start;
+    }
+
+    .city-category__map {
+      min-height: 32rem;
+    }
+  }
+</style>
+{{ end }}
